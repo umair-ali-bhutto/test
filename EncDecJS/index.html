@@ -6,16 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document 1</title>
 </head>
+<style>
+    .disabled-link {
+        color: gray;
+        pointer-events: none;
+        text-decoration: none;
+    }
+</style>
 
 <body>
 
     <script>
-        // Import functions from Web Crypto API
+
         const subtleCrypto = crypto.subtle;
         const textEncoder = new TextEncoder();
-        // const textDecoder = new TextDecoder();
 
-        // This function will contain your asynchronous code
         async function runEncryptionExample() {
             const encryptionKey = await generateKey();
 
@@ -23,17 +28,16 @@
                 return await subtleCrypto.generateKey(
                     {
                         name: 'AES-GCM',
-                        length: 256, // Key length in bits
+                        length: 256,
                     },
-                    true, // Can be used for encryption
-                    ['encrypt', 'decrypt'] // Key usages
+                    true,
+                    ['encrypt', 'decrypt']
                 );
             }
 
-            // Export the key's raw data
+
             const exportedKey = await subtleCrypto.exportKey('raw', encryptionKey);
 
-            // Convert the raw data to a base64-encoded string
             const exportedKeyString = btoa(String.fromCharCode(...new Uint8Array(exportedKey)));
             localStorage.setItem('key', exportedKeyString);
 
@@ -50,43 +54,27 @@
                 return encryptedData;
             }
 
-            //   async function decryptData(encryptedData, key) {
-            //     const decryptedData = await subtleCrypto.decrypt(
-            //       {
-            //         name: 'AES-GCM',
-            //         iv: new Uint8Array([0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF]),
-            //       },
-            //       key,
-            //       encryptedData
-            //     );
-            //     const decodedData = textDecoder.decode(decryptedData);
-            //     return decodedData;
-            //   }
+            const anchorElement = document.getElementById('anchor');
 
-
-
-
-            const dataToEncrypt = 'Hello, this is a secret message!';
+            const dataToEncrypt = prompt('Kindly enter your message to encrypt');
+            console.log(dataToEncrypt);
+            if (dataToEncrypt === null || dataToEncrypt.trim() === '') {
+                anchorElement.classList.add('disabled-link');
+                anchorElement.innerHTML = "Nope You Cannot Go Forward.";
+                anchorElement.addEventListener('click', function (event) {
+                    event.preventDefault();
+                });
+            }
             const encryptedData = await encryptData(dataToEncrypt, encryptionKey);
-
-
             localStorage.setItem('data', JSON.stringify(Array.from(new Uint8Array(encryptedData))));
-
-
-            //   // Retrieve and decrypt the data from localStorage
-            //   const storedEncryptedData = new Uint8Array(JSON.parse(localStorage.getItem('data')));
-            //   const decryptedMessage = await decryptData(storedEncryptedData, encryptionKey);
-            //   console.log('Decrypted Message:', decryptedMessage);
-
         }
 
-        // Call the async function to start the encryption example
         runEncryptionExample();
 
 
     </script>
 
-    <a href="nextPage.html"> go forward </a>
+    <a id="anchor" href="nextPage.html">Go Forward.</a>
 
 </body>
 

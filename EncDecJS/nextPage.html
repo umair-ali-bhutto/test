@@ -13,10 +13,7 @@
     <script>
 
         const subtleCrypto = crypto.subtle;
-        //const textEncoder = new TextEncoder();
         const textDecoder = new TextDecoder();
-
-        // This function will contain your asynchronous code
         async function runEncryptionExample() {
 
             const importedKeyString = localStorage.getItem('key');
@@ -30,29 +27,6 @@
                 ['encrypt', 'decrypt']
             );
 
-            // async function generateKey() {
-            //     return await subtleCrypto.generateKey(
-            //         {
-            //             name: 'AES-GCM',
-            //             length: 256, // Key length in bits
-            //         },
-            //         true, // Can be used for encryption
-            //         ['encrypt', 'decrypt'] // Key usages
-            //     );
-            // }
-
-            // async function encryptData(data, key) {
-            //     const encodedData = textEncoder.encode(data);
-            //     const encryptedData = await subtleCrypto.encrypt(
-            //         {
-            //             name: 'AES-GCM',
-            //             iv: new Uint8Array([0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF]),
-            //         },
-            //         key,
-            //         encodedData
-            //     );
-            //     return encryptedData;
-            // }
             async function decryptData(encryptedData, key) {
                 const decryptedData = await subtleCrypto.decrypt(
                     {
@@ -66,20 +40,11 @@
                 return decodedData;
             }
 
-            // const dataToEncrypt = 'Hello, this is a secret message!';
-            // const encryptedData = await encryptData(dataToEncrypt, encryptionKey);
-
-
-            // // Store the encrypted data in localStorage as a Uint8Array
-            // localStorage.setItem('data', JSON.stringify(Array.from(new Uint8Array(encryptedData))));
-
             const storedEncryptedData = new Uint8Array(JSON.parse(localStorage.getItem('data')));
             const decryptedMessage = await decryptData(storedEncryptedData, importedKey);
             console.log('Decrypted Message:', decryptedMessage);
             document.getElementById('div').innerHTML = decryptedMessage;
         }
-
-        // Call the async function to start the encryption example
         runEncryptionExample();
 
     </script>
