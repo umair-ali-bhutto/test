@@ -1,14 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qr Generation</title>
-    
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
 </head>
+<style>
+    div {
+        margin-top: 5%;
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
 <body>
+    <div style="text-align: center;">
+        <div id="qrcode"></div>
+
+    </div>
+    <script>
+
+        const qrcodeContainer = document.getElementById('qrcode');
+
+        const data = prompt('Kindly Enter Your Url or Message to Make QR Code');
+        console.log(data);
+        if (data !== null && data.trim() !== '') {
+            const dataToEncode = data;
+
+            const qrcode = new QRCode(qrcodeContainer, {
+                text: dataToEncode,
+                width: 250,
+                height: 250,
+                //   colorDark: '#000000',    
+                //   colorLight: '#ffffff', 
+            });
+        }
+        else {
+            qrcodeContainer.innerHTML = "Sorry Qr Not Generated."
+        }
 
 
-    
+
+
+    </script>
+
+
+
+
+
 </body>
+
 </html>
