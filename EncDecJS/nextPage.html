@@ -11,8 +11,6 @@
 
 
     <script>
-       
-        console.log(idValue); // Output: 1
 
         const subtleCrypto = crypto.subtle;
         //const textEncoder = new TextEncoder();
@@ -20,7 +18,17 @@
 
         // This function will contain your asynchronous code
         async function runEncryptionExample() {
-            const encryptionKey = new Uint8Array(JSON.parse(idValue));
+
+            const importedKeyString = localStorage.getItem('key');
+            const importedKeyData = Uint8Array.from(atob(importedKeyString), c => c.charCodeAt(0));
+
+            const importedKey = await subtleCrypto.importKey(
+                'raw',
+                importedKeyData,
+                { name: 'AES-GCM' },
+                false,
+                ['encrypt', 'decrypt']
+            );
 
             // async function generateKey() {
             //     return await subtleCrypto.generateKey(
@@ -45,7 +53,6 @@
             //     );
             //     return encryptedData;
             // }
-
             async function decryptData(encryptedData, key) {
                 const decryptedData = await subtleCrypto.decrypt(
                     {
@@ -59,9 +66,6 @@
                 return decodedData;
             }
 
-
-
-
             // const dataToEncrypt = 'Hello, this is a secret message!';
             // const encryptedData = await encryptData(dataToEncrypt, encryptionKey);
 
@@ -70,7 +74,7 @@
             // localStorage.setItem('data', JSON.stringify(Array.from(new Uint8Array(encryptedData))));
 
             const storedEncryptedData = new Uint8Array(JSON.parse(localStorage.getItem('data')));
-            const decryptedMessage = await decryptData(storedEncryptedData, encryptionKey);
+            const decryptedMessage = await decryptData(storedEncryptedData, importedKey);
             console.log('Decrypted Message:', decryptedMessage);
             document.getElementById('div').innerHTML = decryptedMessage;
         }
