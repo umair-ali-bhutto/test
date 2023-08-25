@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find a Word Game</title>
+</head>
+
+ <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #feedback {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #attempts {
+            margin-top: 10px;
+        }
+    </style>
+
+<body>
+    <div class="container">
+        <h1>Find a Word Game</h1>
+        <label for="level">Select a level:</label>
+        <select id="level">
+            <option value="beginners">Beginners</option>
+            <option value="moderate">Moderate</option>
+            <option value="expert">Expert</option>
+        </select>
+        <button id="startButton">Start Game</button>
+        <div id="gameArea" class="hidden">
+            <p id="wordLength"></p>
+            <input type="text" id="guessInput" placeholder="Enter your guess">
+            <button id="guessButton">Guess</button>
+            <p id="feedback"></p>
+            <p id="attempts"></p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const levelSelect = document.getElementById("level");
+            const startButton = document.getElementById("startButton");
+            const gameArea = document.getElementById("gameArea");
+            const wordLength = document.getElementById("wordLength");
+            const guessInput = document.getElementById("guessInput");
+            const guessButton = document.getElementById("guessButton");
+            const feedback = document.getElementById("feedback");
+            const attempts = document.getElementById("attempts");
+
+            let secretWord;
+            let maxAttempts;
+
+            startButton.addEventListener("click", startGame);
+            guessButton.addEventListener("click", makeGuess);
+
+            function startGame() {
+                const level = levelSelect.value;
+                if (level === "beginners") {
+                    secretWord = randomWord(["apple", "happy", "cloud", "water", "table"]);
+                    maxAttempts = 3;
+                } else if (level === "moderate") {
+                    secretWord = randomWord(["elephant", "guitar", "diamond", "sunrise", "flamingo"]);
+                    maxAttempts = 5;
+                } else if (level === "expert") {
+                    secretWord = randomWord(["chocolate", "incredible", "juxtapose", "butterfly", "zylophone"]);
+                    maxAttempts = 7;
+                }
+
+                wordLength.textContent = `Guess the ${secretWord.length}-letter word.`;
+                guessInput.value = "";
+                feedback.textContent = "";
+                attempts.textContent = `You have ${maxAttempts} attempts.`;
+                gameArea.classList.remove("hidden");
+            }
+
+            function makeGuess() {
+                const guess = guessInput.value.toLowerCase();
+                if (!isValidGuess(guess)) {
+                    feedback.textContent = "Invalid guess format. Please enter a valid word.";
+                    return;
+                }
+
+                if (checkGuess(secretWord, guess)) {
+                    feedback.textContent = "Congratulations! You guessed the word!";
+                    gameArea.classList.add("hidden");
+                } else {
+                    feedback.textContent = "Incorrect guess. Try again.";
+                    maxAttempts--;
+                    attempts.textContent = `You have ${maxAttempts} attempts.`;
+                    if (maxAttempts === 0) {
+                        feedback.textContent = `Sorry, you've run out of attempts. The word was: ${secretWord}`;
+                        gameArea.classList.add("hidden");
+                    }
+                }
+            }
+
+            function randomWord(wordList) {
+                return wordList[Math.floor(Math.random() * wordList.length)];
+            }
+
+            function isValidGuess(guess) {
+                return /^[a-zA-Z]+$/.test(guess) && guess.length === secretWord.length;
+            }
+
+            function checkGuess(secretWord, guess) {
+                for (let i = 0; i < secretWord.length; i++) {
+                    if (guess[i] !== secretWord[i]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        });
+
+    </script>
+</body>
+
+</html>
