@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Text Converter</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .container {
+        background-color: #fff;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    h1 {
+        margin-top: 0;
+    }
+
+    #imageInput {
+        margin-top: 10px;
+    }
+
+    .output {
+        margin-top: 20px;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>Image to Text Converter</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <div class="output">
+            <p id="transmutedText"></p>
+            <div id="loader" style="display: none;">
+                <img src="loader.gif" alt="Loading...">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.2"></script>
+    <script>
+        const { createWorker } = Tesseract;
+        let worker;
+
+        async function initializeWorker() {
+            worker = createWorker();
+            await worker.load();
+            await worker.loadLanguage('eng');
+            await worker.initialize('eng');
+        }
+
+        async function terminateWorker() {
+            if (worker) {
+                await worker.terminate();
+            }
+        }
+
+        async function convertImageToText(imageUrl) {
+            if (!worker) {
+                await initializeWorker();
+            }
+
+            const loader = document.getElementById('loader');
+            loader.style.display = 'block';
+
+            const { data: { text } } = await worker.recognize(imageUrl);
+
+            const textElement = document.getElementById('transmutedText');
+            textElement.textContent = text;
+
+            loader.style.display = 'none';
+        }
+
+        const imageInput = document.getElementById('imageInput');
+
+        imageInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const imageUrl = URL.createObjectURL(file);
+                convertImageToText(imageUrl);
+            }
+        });
+    </script>
+</body>
+
+
+</html>

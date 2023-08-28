@@ -26,7 +26,7 @@ This web-based game allows players to guess words based on different difficulty 
 
 1. Clone this repository to your local machine:
    ```sh
-   git clone https://github.com/your-username/find-a-word-game.git
+   git clone https://github.com/umair-ali-bhutto/test.git
 
 2. go inside the directory created by above command.
 
