@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor</title>
+</head>
+<body>
+    <input type="file" accept="image/*" id="fileInput">
+    <button id="compressButton">Compress</button>
+    <a id="downloadLink" style="display: none" download="compressed_image.jpg">Download Compressed Image</a>
+    <img height="50%" width="50%" id="originalImage" style="display: none">
+    <img height="50%" width="50%" id="compressedImage" style="display: none">
+    <script src="compressor.js"></script>
+</body>
+</html>
